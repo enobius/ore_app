@@ -4,27 +4,57 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:firebase_database/firebase_database.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ore_app/data/data_repository.dart';
+import 'package:ore_app/screens/user_man.dart';
 
-class Home extends StatelessWidget {
+class Home extends StatefulWidget {
+
+  @override
+  State<Home> createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
+  Color main = const Color.fromARGB(255, 120, 162, 204);
+  Color background = const Color.fromARGB(255, 250, 250, 250);
+  String title = "ORE Lock";
+  String userMan = "User Management";
+  String keyMan = "Key Management";
+  final DataRepository rep = DataRepository();
+  int taps = 0;
+  int users = 0;
 
   @override
   Widget build(BuildContext context) {
 
-    Color main = const Color.fromARGB(255, 120, 162, 204);
-    Color background = const Color.fromARGB(255, 250, 250, 250);
-    String title = "ORE Lock";
-    String userMan = "User Management";
-    String keyMan = "Key Management";
-    FirebaseDatabase database = FirebaseDatabase.instance;
-    DatabaseReference ref = FirebaseDatabase.instance.ref("Account_id");
-    void func() async {
-      Query query = ref.orderByChild("Primary_Keys");
-      DataSnapshot event = await query.get();
-      print(event.value);
+
+
+    void addTap() {
+      if (taps == 2) {
+          taps = 0;
+      }
+      setState(() {
+        taps++;
+      });
     }
 
-    func();
+    void lockFunc() {
+      if (taps == 1) {
+        rep.lock();
+      } else if (taps == 2) {
+        rep.unlock();
+      }
+    }
+
+    void getNumUsers() async {
+      int numUsers = await rep.getNumUsers();
+      setState(() {
+        users = numUsers;
+      });
+    }
+
+    getNumUsers();
+
 
     return Scaffold(
       appBar: AppBar(
@@ -67,103 +97,66 @@ class Home extends StatelessWidget {
                 ],
               ),
 
-              child: Center(
-                child: SvgPicture.asset(
-                  "images/lockedLock.svg",
-                  color: main,
-                  width: 53,
-                  height: 89,
+              child: InkWell(
+                onTap: () {
+                  setState(() {
+                    addTap();
+                    lockFunc();
+                  });
+                },
+                child: Center(
+                  child: SvgPicture.asset(
+                    "images/lockedLock.svg",
+                    color: main,
+                    width: 53,
+                    height: 89,
+                  ),
                 ),
               ),
             ),
           ),
 
-          Container(
-            margin: EdgeInsets.only(top: 240, left: 10, right: 10),
-            child: Card(
-              child: Container(
-                padding: EdgeInsets.all(15.0),
-                child: Row(
-
-                  children: [
-                    Icon(
-                      Icons.account_circle_sharp,
-                      color: main,
-                      size: 50,
-                    ),
-
-                    Container(
-                      margin: EdgeInsets.only(left: 10),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            userMan,
-
-                            style: TextStyle(
-                              color: Colors.black54,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-
-                          Text(
-                            "4 Users",
-
-                            style: TextStyle(
-                              color: Colors.black54,
-                              fontStyle: FontStyle.italic
-                            ),
-                          ),
-                        ],
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            ),
-          ),
+          Expanded(child: SizedBox()),
 
           Container(
-            margin: EdgeInsets.only(top: 10, left: 10, right: 10),
-            child: Card(
-              child: Container(
+            margin: EdgeInsets.only(bottom: 30, left: 10, right: 10),
+            child: InkWell(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => UserManagement()),
+                );
+              },
+              child: Card(
+                child: Container(
                   padding: EdgeInsets.all(15.0),
                   child: Row(
+            
                     children: [
-                      Container(
-                        width: 50,
-                        height: 50,
-                        child: CircleAvatar(
-                          backgroundColor: main,
-                          radius: 44,
-                          child: SvgPicture.asset(
-                            "images/key.svg",
-                            color: Colors.white,
-                            width: 34,
-
-                          ),
-                        ),
+                      Icon(
+                        Icons.account_circle_sharp,
+                        color: main,
+                        size: 50,
                       ),
+            
                       Container(
                         margin: EdgeInsets.only(left: 10),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              keyMan,
-
-                              // ignore: prefer_const_constructors
+                              userMan,
+            
                               style: TextStyle(
                                 color: Colors.black54,
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-
+            
                             Text(
-                              "2 Keys",
-
+                              "$users Users",
+            
                               style: TextStyle(
                                 color: Colors.black54,
                                 fontStyle: FontStyle.italic
@@ -171,12 +164,15 @@ class Home extends StatelessWidget {
                             ),
                           ],
                         ),
-                      ),
+                      )
                     ],
                   ),
                 ),
+              ),
             ),
-          )
+          ),
+
+          
         ],
       ),
     );

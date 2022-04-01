@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:ore_app/screens/fake_home.dart';
 import 'package:ore_app/screens/home.dart';
 import 'package:ore_app/screens/register.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:ore_app/screens/user_man.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -12,6 +14,7 @@ void main() async {
   //WidgetsApp //MaterialApp //CupertinoApp
   runApp(MaterialApp(
     home: Home(),
+    debugShowCheckedModeBanner: false,
 
   ));
 }

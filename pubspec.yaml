@@ -37,6 +37,8 @@ dependencies:
   flutter_svg:
   firebase_core:
   firebase_database:
+  cloud_firestore: ^3.1.8
+  cloud_firestore_web: ^2.6.8
 
 dev_dependencies:
   flutter_test:
