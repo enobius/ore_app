@@ -21,6 +21,22 @@ class DataRepository {
     .update({'id': id});
   }
 
+  Future<String> login(String email) async {
+    String response = "";
+    await collection
+    .where("email", isEqualTo: email)
+    .get()
+    .then((value) {
+      for (var element in value.docs) {
+        response = "succesful";
+      }
+    })
+    .catchError((error) {
+      response = "Wrong Credentials";
+    });
+    return response;
+  }
+
   Future<void> addLock(Lock key, String id) {
     return lCollection.doc(id).set(key.toJson());
   }
