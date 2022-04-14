@@ -21,7 +21,7 @@ class _LoginPageState extends State<LoginPage> {
   String email = "Email";
   String username = "Username";
   String password = "Password";
-  String button = "Sign Up";
+  String button = "Sign In";
   String userNameCont = "";
   TextEditingController emailCont = TextEditingController();
   TextEditingController passwordCont = TextEditingController();

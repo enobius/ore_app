@@ -17,7 +17,6 @@ void main() async {
   runApp(MaterialApp(
     home: MyApp(),
     debugShowCheckedModeBanner: false,
-
   ));
 }
 
@@ -31,6 +30,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider<LoginProvider>.value(value: LoginProvider()),
       ],
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         home: LoginPage(),
       ),
     );

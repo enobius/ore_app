@@ -111,7 +111,6 @@ class _HomeState extends State<Home> {
                 child: InkWell(
                   onTap: () {
                     setState(() {
-                      print(loginProvider.email);
                       isEligible(loginProvider.email);
                       addTap();
                       lockFunc();

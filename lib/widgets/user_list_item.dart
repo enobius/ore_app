@@ -4,8 +4,9 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:ore_app/data/account.dart';
+import 'package:ore_app/data/data_repository.dart';
 
-class UserListItem extends StatelessWidget {
+class UserListItem extends StatefulWidget {
   final Account account;
   //final VoidCallback onClicked;
 
@@ -15,7 +16,13 @@ class UserListItem extends StatelessWidget {
   });
 
   @override
+  State<UserListItem> createState() => _UserListItemState();
+}
+
+class _UserListItemState extends State<UserListItem> {
+  @override
   Widget build(BuildContext context) {
+    DataRepository rep = DataRepository();
     Color main = const Color.fromARGB(255, 120, 162, 204);
     
     return Container(
@@ -37,7 +44,7 @@ class UserListItem extends StatelessWidget {
                   // ignore: prefer_const_literals_to_create_immutables
                   children: [
                     Text(
-                      account.name,
+                      widget.account.name,
                       style: TextStyle(
                         color: Colors.black54,
                         fontSize: 16,
@@ -56,7 +63,11 @@ class UserListItem extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(right: 10.0),
                 child: InkWell(
-                  onTap: () => null, //onClicked,
+                  onTap: () {
+                    setState(() {
+                      rep.deleteUserKey(widget.account.email);
+                    });
+                  }, //onClicked,
                   child: Icon(
                     Icons.delete_forever,
                     color: main,

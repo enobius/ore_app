@@ -25,6 +25,10 @@ class FakeHome extends StatelessWidget {
       });
     }
 
+    void delete() async {
+      rep.deleteUserKey("jdoe@email.com");
+    }
+
     Future<void> addKey() {
       return rep.addLock(key, "1");
     }
@@ -59,7 +63,7 @@ class FakeHome extends StatelessWidget {
 
     return Center(
       child: FlatButton(
-        onPressed: addAcc,
+        onPressed: delete,
         child: Text(
           "Add Account",
         ),

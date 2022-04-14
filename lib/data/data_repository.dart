@@ -103,6 +103,13 @@ class DataRepository {
     });
     return users;
   }
+
+  Future<void> deleteUserKey(String email) async {
+    String id = await getUserId(email);
+    print(id);
+    lCollection.doc("1")
+    .update({"people": FieldValue.arrayRemove([id])});
+  }
   
   Future<int> lockUsers() async {
     List users = await getLockUsers();

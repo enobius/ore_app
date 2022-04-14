@@ -26,6 +26,15 @@ class _UserManagementState extends State<UserManagement> {
   void initState() {
     getUsers();
   }
+
+  Future<void> pullRefresh() async {
+    Navigator.pushReplacement(
+      context, 
+      MaterialPageRoute(
+        builder: (BuildContext context) => super.widget)
+      );
+  }
+
   void getUsers() async {
     var  users = await rep.getLockUsers();
       
@@ -77,72 +86,79 @@ class _UserManagementState extends State<UserManagement> {
         ),
       ),
 
-      body: ListView(
-        children: [
-           Container(
-            margin: EdgeInsets.only(top: 50, left: 10, right: 10),
-            child: Card(
-              child: Container(
-                padding: EdgeInsets.all(15.0),
-                child: Row(
-
-                  children: [
-                    Icon(
-                      Icons.account_circle_sharp,
-                      color: main,
-                      size: 50,
-                    ),
-
-                    Container(
-                      margin: EdgeInsets.only(left: 10),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        // ignore: prefer_const_literals_to_create_immutables
-                        children: [
-                          Text(
-                            "John Doe",
-
-                            style: TextStyle(
-                              color: Colors.black54,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-
-                          Text(
-                            "Owner",
-
-                            style: TextStyle(
-                              color: Colors.black54,
-                              fontStyle: FontStyle.italic
-                            ),
-                          ),
-                        ],
+      body: RefreshIndicator(
+        onRefresh: () => pullRefresh(),
+        child: ListView(
+          children: [
+             Container(
+              margin: EdgeInsets.only(top: 50, left: 10, right: 10),
+              child: Card(
+                child: Container(
+                  padding: EdgeInsets.all(15.0),
+                  child: Row(
+      
+                    children: [
+                      Icon(
+                        Icons.account_circle_sharp,
+                        color: main,
+                        size: 50,
                       ),
-                    ),
-                  ],
+      
+                      Container(
+                        margin: EdgeInsets.only(left: 10),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          // ignore: prefer_const_literals_to_create_immutables
+                          children: [
+                            Text(
+                              "John Doe",
+      
+                              style: TextStyle(
+                                color: Colors.black54,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+      
+                            Text(
+                              "Owner",
+      
+                              style: TextStyle(
+                                color: Colors.black54,
+                                fontStyle: FontStyle.italic
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-
-          Column(
-            children: [
-              for (var id in theUsers) StreamBuilder<QuerySnapshot>(
-                stream: FirebaseFirestore.instance.collection('accounts').where("id", isEqualTo: id).snapshots(),
-                builder: (context,  snapshot) {
-                  if(!snapshot.hasData) {
-                    return Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  }
-
-                  return _buildList(snapshot.data?.docs);
-                },
-              )
-            ],
-          )
-        ],
+      
+            Column(
+              children: [
+                for (var id in theUsers) StreamBuilder<QuerySnapshot>(
+                  stream: FirebaseFirestore.instance.collection('accounts').where("id", isEqualTo: id).snapshots(),
+                  builder: (context,  snapshot) {
+                    if(!snapshot.hasData) {
+                      return Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    } else{
+                      return _buildList(snapshot.data?.docs);
+                    }
+                    setState(() {
+                      print("reloads");
+                    });
+        
+                  },
+                )
+              ],
+            )
+          ],
+        ),
       ),
     );
   }

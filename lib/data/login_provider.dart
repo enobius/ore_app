@@ -11,7 +11,6 @@ class LoginProvider extends ChangeNotifier {
 
   login(String email, String password) async {
     String response = await rep.login(email);
-    print(response);
     if (response == "succesful") {
       _email = email;
       isLoggedIn = true;
